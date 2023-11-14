@@ -27,6 +27,10 @@ public class PlayerController : MonoBehaviour {
 
     private Rigidbody2D playerRB;
 
+    private bool puedehablar = false;
+    [SerializeField]
+    GameObject dialogbox;
+
     // Use this for initialization
     void Start () {
         //si no existeix el PlayerController
@@ -76,6 +80,10 @@ public class PlayerController : MonoBehaviour {
             Mathf.Clamp(transform.position.x, bottomLeftLimit.x, topRightLimit.x),
             Mathf.Clamp(transform.position.y, bottomLeftLimit.y, topRightLimit.y),
             transform.position.z);
+        if (Input.GetKeyDown(KeyCode.E) && puedehablar)
+        {
+            dialogbox.SetActive(!dialogbox.activeSelf);
+        }
     }
 
 
@@ -105,4 +113,19 @@ public class PlayerController : MonoBehaviour {
         this.topRightLimit = topRight + new Vector3(-.5f, -1f, 0f);
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("NPC") && Vector2.Distance(transform.position, collision.transform.position) < 5)
+        {
+            puedehablar = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("NPC") && Vector2.Distance(transform.position, collision.transform.position) < 5)
+        {
+            puedehablar = false;
+            dialogbox.SetActive(false);
+        }
+    }
 }
